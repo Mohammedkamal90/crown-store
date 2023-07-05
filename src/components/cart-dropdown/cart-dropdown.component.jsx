@@ -11,9 +11,12 @@ const CartDropdown = () => {
     <div className="cart-dropdown-container">
       <div className="cart-items" />
       <div className="cart-items">
+       <div className="scroll-area">
+
         {cartItems.map((item) => (
           <CartItem key={item.id} cartItem={item} />
-        ))}
+          ))}
+          </div>
       </div>
       <Button>GO TO CHECKOUT</Button>
     </div>
