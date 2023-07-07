@@ -1,6 +1,6 @@
 import { useState } from "react";
+
 import FormInput from "../form-input/form-input.component";
-import "./sign-up-form.styles.scss";
 import Button from "../button/button.component";
 
 import {
@@ -8,7 +8,9 @@ import {
   createUserDocumentFromAuth,
 } from "../../utils/firebase/firebase.utils";
 
-const defultFormFields = {
+import { SignUpContainer } from "./sign-up-form.styles";
+
+const defaultFormFields = {
   displayName: "",
   email: "",
   password: "",
@@ -16,19 +18,21 @@ const defultFormFields = {
 };
 
 const SignUpForm = () => {
-  const [formFields, setFormFields] = useState(defultFormFields);
+  const [formFields, setFormFields] = useState(defaultFormFields);
   const { displayName, email, password, confirmPassword } = formFields;
 
-  const restFormFields = () => {
-    setFormFields(defultFormFields);
+  const resetFormFields = () => {
+    setFormFields(defaultFormFields);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      alert("passwords do not match");
       return;
     }
+
     try {
       const { user } = await createAuthUserWithEmailAndPassword(
         email,
@@ -36,12 +40,12 @@ const SignUpForm = () => {
       );
 
       await createUserDocumentFromAuth(user, { displayName });
-      restFormFields();
+      resetFormFields();
     } catch (error) {
-      if (error.code == "auth/email-already-in-use") {
-        alert("Cannot create user, Email already in use");
+      if (error.code === "auth/email-already-in-use") {
+        alert("Cannot create user, email already in use");
       } else {
-        console.log("user error", error);
+        console.log("user creation encountered an error", error);
       }
     }
   };
@@ -53,45 +57,48 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="sign-up-container">
-      <h2>Don't have an account</h2>
-      <span>Sign Up</span>
+    <SignUpContainer>
+      <h2>Don't have an account?</h2>
+      <span>Sign up with your email and password</span>
       <form onSubmit={handleSubmit}>
         <FormInput
-          label="display Name"
-          required
+          label="Display Name"
           type="text"
+          required
           onChange={handleChange}
           name="displayName"
           value={displayName}
         />
+
         <FormInput
-          label="email"
-          required
+          label="Email"
           type="email"
+          required
           onChange={handleChange}
           name="email"
           value={email}
         />
+
         <FormInput
-          label="password"
-          required
+          label="Password"
           type="password"
+          required
           onChange={handleChange}
           name="password"
           value={password}
         />
+
         <FormInput
           label="Confirm Password"
-          required
           type="password"
+          required
           onChange={handleChange}
           name="confirmPassword"
           value={confirmPassword}
         />
         <Button type="submit">Sign Up</Button>
       </form>
-    </div>
+    </SignUpContainer>
   );
 };
 
